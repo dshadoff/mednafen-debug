@@ -733,9 +733,9 @@ void Debugger_MT_DrawToScreen(const MDFN_PixelFormat& pf, signed screen_w, signe
  if(xm < 1) xm = 1;
  if(ym < 1) ym = 1;
 
- // Allow it to be compacted horizontally, but don't stretch it out, as it's hard(IMHO) to read.
+ // Don't allow it to be stretched out, as it's hard(IMHO) to read.
  if(xm > ym) xm = ym;
- if(ym > (2 * xm)) ym = 2 * xm;
+ if(ym > xm) ym = xm;
 
  zederect.w = debrect->w * xm;
  zederect.h = debrect->h * ym;
@@ -789,8 +789,8 @@ void Debugger_GT_Draw(void)
 	  break;
 
   /* Debugger Log */
-  case 3: rect->w = 512;
-	  rect->h = 448;
+  case 3: rect->w = 800;
+	  rect->h = 600;
 	  break;
  }
 
