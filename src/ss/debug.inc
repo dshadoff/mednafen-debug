@@ -496,118 +496,126 @@ static MDFN_COLD void DBG_ToggleSyntax(void)
 
 static const RegType DBG_Regs_CPU[] =
 {
- { SH7095::GSREG_PC_ID, "PC", "PC (Effective)", 4 },
- { SH7095::GSREG_RPC, "RPC", "PC (Real)", 4 },
+ { 0, 0, "----------------", "", 0xFFFF },
 
- { SH7095::GSREG_PID, "PID", "Pipeline ID Buffer", 4 },
- { SH7095::GSREG_PIF, "PIF", "Pipeline IF Buffer", 4 },
+ { SH7095::GSREG_PC_ID,		6,	"PC",		"PC (Effective)", 4 },
+ { SH7095::GSREG_RPC,		5,	"RPC",		"PC (Real)", 4 },
 
- { SH7095::GSREG_EP, "EP", "Exception Pending", 4 },
+ { SH7095::GSREG_PID,		5,	"PID",		"Pipeline ID Buffer", 4 },
+ { SH7095::GSREG_PIF,		5,	"PIF",		"Pipeline IF Buffer", 4 },
 
- { SH7095::GSREG_R0, "R0", "R0", 4 },
- { SH7095::GSREG_R1, "R1", "R1",  4 },
- { SH7095::GSREG_R2, "R2", "R2",  4 },
- { SH7095::GSREG_R3, "R3", "R3",  4 },
- { SH7095::GSREG_R4, "R4", "R4",  4 },
- { SH7095::GSREG_R5, "R5", "R5",  4 },
- { SH7095::GSREG_R6, "R6", "R6",  4 },
- { SH7095::GSREG_R7, "R7", "R7",  4 },
- { SH7095::GSREG_R8, "R8", "R8",  4 },
- { SH7095::GSREG_R9, "R9", "R9",  4 },
- { SH7095::GSREG_R10, "R10", "R10",  4 },
- { SH7095::GSREG_R11, "R11", "R11",  4 },
- { SH7095::GSREG_R12, "R12", "R12",  4 },
- { SH7095::GSREG_R13, "R13", "R13",  4 },
- { SH7095::GSREG_R14, "R14", "R14",  4 },
- { SH7095::GSREG_R15, "R15", "R15/Stack Pointer", 4 },
+ { SH7095::GSREG_EP,		6,	"EP",		"Exception Pending", 4 },
 
- { 0, "------", "", 0xFFFF },
+ { SH7095::GSREG_R0,		6,	"R0",		"R0", 4 },
+ { SH7095::GSREG_R1,		6,	"R1",		"R1",  4 },
+ { SH7095::GSREG_R2,		6,	"R2",		"R2",  4 },
+ { SH7095::GSREG_R3,		6,	"R3",		"R3",  4 },
+ { SH7095::GSREG_R4,		6,	"R4",		"R4",  4 },
+ { SH7095::GSREG_R5,		6,	"R5",		"R5",  4 },
+ { SH7095::GSREG_R6,		6,	"R6",		"R6",  4 },
+ { SH7095::GSREG_R7,		6,	"R7",		"R7",  4 },
+ { SH7095::GSREG_R8,		6,	"R8",		"R8",  4 },
+ { SH7095::GSREG_R9,		6,	"R9",		"R9",  4 },
+ { SH7095::GSREG_R10,		5,	"R10",		"R10",  4 },
+ { SH7095::GSREG_R11,		5,	"R11",		"R11",  4 },
+ { SH7095::GSREG_R12,		5,	"R12",		"R12",  4 },
+ { SH7095::GSREG_R13,		5,	"R13",		"R13",  4 },
+ { SH7095::GSREG_R14,		5,	"R14",		"R14",  4 },
+ { SH7095::GSREG_R15,		5,	"R15",		"R15/Stack Pointer", 4 },
 
- { SH7095::GSREG_SR, "SR", "Status Register", 4 },
- { SH7095::GSREG_GBR, "GBR", "Global Base Register", 4 },
- { SH7095::GSREG_VBR, "VBR", "Vector Base Register", 4 },
+ { 0, 0, "----------------", "", 0xFFFF },
 
- { 0, "------", "", 0xFFFF },
+ { SH7095::GSREG_SR,		6,	"SR",		"Status Register", 4 },
+ { SH7095::GSREG_GBR,		5,	"GBR",		"Global Base Register", 4 },
+ { SH7095::GSREG_VBR,		5,	"VBR",		"Vector Base Register", 4 },
 
- { SH7095::GSREG_MACH, "MACH", "Multiply-and-Accumulate High", 4 },
- { SH7095::GSREG_MACL, "MACL", "Multiply-and-Accumulate Low", 4 },
+ { 0, 0, "----------------", "", 0xFFFF },
 
- { 0, "------", "", 0xFFFF },
+ { SH7095::GSREG_MACH,		4,	"MACH",		"Multiply-and-Accumulate High", 4 },
+ { SH7095::GSREG_MACL,		4,	"MACL",		"Multiply-and-Accumulate Low", 4 },
 
- { SH7095::GSREG_PR, "PR", "Procedure Register", 4 },
+ { 0, 0, "----------------", "", 0xFFFF },
 
- { 0, "------", "", 0xFFFF },
+ { SH7095::GSREG_PR,		6,	"PR",		"Procedure Register", 4 },
 
- { SH7095::GSREG_NMIL, "NMIL", "NMI Level(Input)", 1 },
- { SH7095::GSREG_IRL, "IRL", "Interrupt Level(Input)", 1 },
- { SH7095::GSREG_IPRA, "IPRA", "IPRA", 2 },
- { SH7095::GSREG_IPRB, "IPRB", "IPRB", 2 },
- { SH7095::GSREG_VCRWDT, "VCRWDT", "VCRWDT", 2 },
- { SH7095::GSREG_VCRA, "VCRA", "VCRA", 2 },
- { SH7095::GSREG_VCRB, "VCRB", "VCRB", 2 },
- { SH7095::GSREG_VCRC, "VCRC", "VCRC", 2 },
- { SH7095::GSREG_VCRD, "VCRD", "VCRD", 2 },
- { SH7095::GSREG_ICR, "ICR", "ICR", 2 },
+ { 0, 0, "----------------", "", 0xFFFF },
 
- { 0, "------", "", 0xFFFF },
+ { SH7095::GSREG_NMIL,		10,	"NMIL",		"NMI Level(Input)", 1 },
+ { SH7095::GSREG_IRL,		11,	"IRL",		"Interrupt Level(Input)", 1 },
+ { SH7095::GSREG_IPRA,		8,	"IPRA",		"IPRA", 2 },
+ { SH7095::GSREG_IPRB,		8,	"IPRB",		"IPRB", 2 },
+ { SH7095::GSREG_VCRWDT,	6,	"VCRWDT",	"VCRWDT", 2 },
+ { SH7095::GSREG_VCRA,		8,	"VCRA",		"VCRA", 2 },
+ { SH7095::GSREG_VCRB,		8,	"VCRB",		"VCRB", 2 },
+ { SH7095::GSREG_VCRC,		8,	"VCRC",		"VCRC", 2 },
+ { SH7095::GSREG_VCRD,		8,	"VCRD",		"VCRD", 2 },
+ { SH7095::GSREG_ICR,		9,	"ICR",		"ICR", 2 },
 
- { SH7095::GSREG_DVSR, "DVSR", "Divisor", 4 },
- { SH7095::GSREG_DVDNT, "DVDNT", "DVDNT", 4 },
- { SH7095::GSREG_DVDNTH, "DVDNTH", "DVDNTH", 4 },
- { SH7095::GSREG_DVDNTL, "DVDNTL", "DVDNTL", 4 },
- { SH7095::GSREG_DVDNTHS, "DVDNTHS", "DVDNTH Shadow", 4 },
- { SH7095::GSREG_DVDNTLS, "DVDNTLS", "DVDNTL Shadow", 4 },
- { SH7095::GSREG_VCRDIV, "VCRDIV", "VCRDIV", 2 },
- { SH7095::GSREG_DVCR, "DVCR", "DVCR", 1 },
+ { 0, 0, "----------------", "", 0xFFFF },
 
- { 0, "------", "", 0xFFFF },
+ { SH7095::GSREG_DVSR,		4,	"DVSR",		"Divisor", 4 },
+ { SH7095::GSREG_DVDNT,		3,	"DVDNT",	"DVDNT", 4 },
+ { SH7095::GSREG_DVDNTH,	2,	"DVDNTH",	"DVDNTH", 4 },
+ { SH7095::GSREG_DVDNTL,	2,	"DVDNTL",	"DVDNTL", 4 },
+ { SH7095::GSREG_DVDNTHS,	1,	"DVDNTHS",	"DVDNTH Shadow", 4 },
+ { SH7095::GSREG_DVDNTLS,	1,	"DVDNTLS",	"DVDNTL Shadow", 4 },
+ { SH7095::GSREG_VCRDIV,	6,	"VCRDIV",	"VCRDIV", 2 },
+ { SH7095::GSREG_DVCR,		10,	"DVCR",		"DVCR", 1 },
 
- { SH7095::GSREG_WTCSR, "WTCSR", "WTCSR", 1 },
- { SH7095::GSREG_WTCSRM, "WTCSRM", "WTCSRM", 1 },
- { SH7095::GSREG_WTCNT, "WTCNT", "WTCNT", 1 },
- { SH7095::GSREG_RSTCSR, "RSTCSR", "RSTCSR", 1 },
- { SH7095::GSREG_RSTCSRM, "RSTCSRM", "RSTCSRM", 1 },
+ { 0, 0, "----------------", "", 0xFFFF },
 
- { 0, "", "", 0 },
+ { SH7095::GSREG_WTCSR,		9,	"WTCSR",	"WTCSR", 1 },
+ { SH7095::GSREG_WTCSRM,	8,	"WTCSRM",	"WTCSRM", 1 },
+ { SH7095::GSREG_WTCNT,		9,	"WTCNT",	"WTCNT", 1 },
+ { SH7095::GSREG_RSTCSR,	8,	"RSTCSR",	"RSTCSR", 1 },
+ { SH7095::GSREG_RSTCSRM,	7,	"RSTCSRM",	"RSTCSRM", 1 },
+
+ { 0, 0, "----------------", "", 0xFFFF },
+
+ { 0, 0, "", "", 0 },
 };
 
 static const RegType DBG_Regs_CPUE[] =
 {
- { SH7095::GSREG_DMAOR, "DMAOR", "DMAOR", 1 },
- { SH7095::GSREG_DMAORM, "DMAORM", "DMAORM", 1 },
+ { 0, 0, "------------", "", 0xFFFF },
 
- { 0, "--DMACH0:--", "", 0xFFFF },
- { SH7095::GSREG_DMA0_SAR, "SAR", "SAR", 4 },
- { SH7095::GSREG_DMA0_DAR, "DAR", "DAR", 4 },
- { SH7095::GSREG_DMA0_TCR, "TCR", "TCR", 4 },
- { SH7095::GSREG_DMA0_CHCR, "CHCR", "CHCR", 2 },
- { SH7095::GSREG_DMA0_CHCRM, "CHCRM", "CHCRM", 2 },
- { SH7095::GSREG_DMA0_VCR, "VCR", "VCR", 1 },
- { SH7095::GSREG_DMA0_DRCR, "DRCR", "DRCR", 1 },
+ { SH7095::GSREG_DMAOR,		5,	"DMAOR",	"DMAOR", 1 },
+ { SH7095::GSREG_DMAORM,	4,	"DMAORM",	"DMAORM", 1 },
 
- { 0, "--DMACH1:--", "", 0xFFFF },
- { SH7095::GSREG_DMA1_SAR, "SAR", "SAR", 4 },
- { SH7095::GSREG_DMA1_DAR, "DAR", "DAR", 4 },
- { SH7095::GSREG_DMA1_TCR, "TCR", "TCR", 4 },
- { SH7095::GSREG_DMA1_CHCR, "CHCR", "CHCR", 2 },
- { SH7095::GSREG_DMA1_CHCRM, "CHCRM", "CHCRM", 2 },
- { SH7095::GSREG_DMA1_VCR, "VCR", "VCR", 1 },
- { SH7095::GSREG_DMA1_DRCR, "DRCR", "DRCR", 1 },
+ { 0, 0, "---DMACH0---", "", 0xFFFF },
+ { SH7095::GSREG_DMA0_SAR,	1,	"SAR",		"SAR", 4 },
+ { SH7095::GSREG_DMA0_DAR,	1,	"DAR",		"DAR", 4 },
+ { SH7095::GSREG_DMA0_TCR,	1,	"TCR",		"TCR", 4 },
+ { SH7095::GSREG_DMA0_CHCR,	4,	"CHCR",		"CHCR", 2 },
+ { SH7095::GSREG_DMA0_CHCRM,	3,	"CHCRM",	"CHCRM", 2 },
+ { SH7095::GSREG_DMA0_VCR,	7,	"VCR",		"VCR", 1 },
+ { SH7095::GSREG_DMA0_DRCR,	6,	"DRCR",		"DRCR", 1 },
 
- { 0, "-----------", "", 0xFFFF },
+ { 0, 0, "---DMACH1---", "", 0xFFFF },
+ { SH7095::GSREG_DMA1_SAR,	1,	"SAR",		"SAR", 4 },
+ { SH7095::GSREG_DMA1_DAR,	1,	"DAR",		"DAR", 4 },
+ { SH7095::GSREG_DMA1_TCR,	1,	"TCR",		"TCR", 4 },
+ { SH7095::GSREG_DMA1_CHCR,	4,	"CHCR",		"CHCR", 2 },
+ { SH7095::GSREG_DMA1_CHCRM,	3,	"CHCRM",	"CHCRM", 2 },
+ { SH7095::GSREG_DMA1_VCR,	7,	"VCR",		"VCR", 1 },
+ { SH7095::GSREG_DMA1_DRCR,	6,	"DRCR",		"DRCR", 1 },
 
- { SH7095::GSREG_FRC, "FRC", "FRC", 2 },
- { SH7095::GSREG_OCR0, "OCRA", "OCRA", 2 },
- { SH7095::GSREG_OCR1, "OCRB", "OCRB", 2 },
- { SH7095::GSREG_FICR, "FICR", "FICR", 2 },
- { SH7095::GSREG_TIER, "TIER", "TIER", 1 },
- { SH7095::GSREG_FTCSR, "FTCSR", "FTCSR", 1 },
- { SH7095::GSREG_FTCSRM, "FTCSRM", "FTCSRM", 1 },
- { SH7095::GSREG_TCR, "TCR", "TCR", 1 },
- { SH7095::GSREG_TOCR, "TOCR", "TOCR", 1 },
- { SH7095::GSREG_RWT, "RWT", "R/W Temp", 1 },
+ { 0, 0, "------------", "", 0xFFFF },
 
- { 0, "", "", 0 },
+ { SH7095::GSREG_FRC,		5,	"FRC",		"FRC", 2 },
+ { SH7095::GSREG_OCR0,		4,	"OCRA",		"OCRA", 2 },
+ { SH7095::GSREG_OCR1,		4,	"OCRB",		"OCRB", 2 },
+ { SH7095::GSREG_FICR,		4,	"FICR",		"FICR", 2 },
+ { SH7095::GSREG_TIER,		6,	"TIER",		"TIER", 1 },
+ { SH7095::GSREG_FTCSR,		5,	"FTCSR",	"FTCSR", 1 },
+ { SH7095::GSREG_FTCSRM,	4,	"FTCSRM",	"FTCSRM", 1 },
+ { SH7095::GSREG_TCR,		7,	"TCR",		"TCR", 1 },
+ { SH7095::GSREG_TOCR,		6,	"TOCR",		"TOCR", 1 },
+ { SH7095::GSREG_RWT,		7,	"RWT",		"R/W Temp", 1 },
+
+ { 0, 0, "------------", "", 0xFFFF },
+
+ { 0, 0, "", "", 0 },
 };
 
 static uint32 DBG_GetRegister_CPU(const unsigned int id, char* special, const uint32 special_len)
@@ -639,36 +647,40 @@ static const RegGroupType DBG_RegGroup_CPUE =
 
 static const RegType DBG_Regs_SCU[] =
 {
- { SCU_GSREG_ILEVEL, "ILevel", "IRL Output to SH2-M", 1 },
- { SCU_GSREG_IVEC, "IVec", "Pending IRQ Vector Number", 1 },
+ { 0, 0, "--------------", "", 0xFFFF },
 
- { 0, "------", "", 0xFFFF },
+ { SCU_GSREG_ILEVEL,	6,	"ILevel",	"IRL Output to SH2-M", 1 },
+ { SCU_GSREG_IVEC,	8,	"IVec",		"Pending IRQ Vector Number", 1 },
 
- { SCU_GSREG_IASSERTED, "IAss", "Status of Input IRQ Lines", 4 },
- { SCU_GSREG_IPENDING, "IPend", "Pending IRQs", 4 },
- { SCU_GSREG_IMASK, "IMask", "IRQ Mask", 2 },
+ { 0, 0, "--------------", "", 0xFFFF },
 
- { 0, "------", "", 0xFFFF },
+ { SCU_GSREG_IASSERTED,	2,	"IAss",		"Status of Input IRQ Lines", 4 },
+ { SCU_GSREG_IPENDING,	1,	"IPend",	"Pending IRQs", 4 },
+ { SCU_GSREG_IMASK,	5,	"IMask",	"IRQ Mask", 2 },
 
- { SCU_GSREG_TENBL, "TENBL", "Timers Enable", 0x100 | 1 },
+ { 0, 0, "--------------", "", 0xFFFF },
 
- { SCU_GSREG_T0CNT, "T0CNT", "Timer0 Counter", 0x100 | 10 },
- { SCU_GSREG_T0CMP, "T0CMP", "Timer0 Compare Value", 0x100 | 10 },
- { SCU_GSREG_T0MET, "T0MET", "Timer0 Met", 0x100 | 1 },
+ { SCU_GSREG_TENBL,	8,	"TENBL",	"Timers Enable", 0x100 | 1 },
 
- { SCU_GSREG_T1RLV, "T1RLV", "Timer1 Reload Value", 0x100 | 9 },
- { SCU_GSREG_T1CNT, "T1CNT", "Timer1 Counter", 0x100 | 9 },
- { SCU_GSREG_T1MOD, "T1MOD", "Timer1 Mode", 0x100 | 1 },
- { SCU_GSREG_T1MET, "T1MET", "Timer1 Met", 0x100 | 1 },
+ { SCU_GSREG_T0CNT,	6,	"T0CNT",	"Timer0 Counter", 0x100 | 10 },
+ { SCU_GSREG_T0CMP,	6,	"T0CMP",	"Timer0 Compare Value", 0x100 | 10 },
+ { SCU_GSREG_T0MET,	8,	"T0MET",	"Timer0 Met", 0x100 | 1 },
 
- { 0, "--DSP:--", "", 0xFFFF },
+ { SCU_GSREG_T1RLV,	6,	"T1RLV",	"Timer1 Reload Value", 0x100 | 9 },
+ { SCU_GSREG_T1CNT,	6,	"T1CNT",	"Timer1 Counter", 0x100 | 9 },
+ { SCU_GSREG_T1MOD,	8,	"T1MOD",	"Timer1 Mode", 0x100 | 1 },
+ { SCU_GSREG_T1MET,	8,	"T1MET",	"Timer1 Met", 0x100 | 1 },
 
- { SCU_GSREG_DSP_EXEC, "EXEC", "Executing", 0x100 | 1 },
- { SCU_GSREG_DSP_PAUSE, "PAUSE", "Paused", 0x100 | 1 },
- { SCU_GSREG_DSP_PC, "PC", "Program Counter", 1 },
- { SCU_GSREG_DSP_END, "END", "End Flag", 0x100 | 1 },
+ { 0, 0, "-----DSP:-----", "", 0xFFFF },
 
- { 0, "", "", 0 },
+ { SCU_GSREG_DSP_EXEC,	9,	"EXEC",		"Executing", 0x100 | 1 },
+ { SCU_GSREG_DSP_PAUSE,	8,	"PAUSE",	"Paused", 0x100 | 1 },
+ { SCU_GSREG_DSP_PC,	10,	"PC",		"Program Counter", 1 },
+ { SCU_GSREG_DSP_END,	10,	"END",		"End Flag", 0x100 | 1 },
+
+ { 0, 0, "--------------", "", 0xFFFF },
+
+ { 0, 0, "", "", 0 },
 };
 
 static const RegGroupType DBG_RegGroup_SCU =
@@ -684,33 +696,35 @@ static const RegGroupType DBG_RegGroup_SCU =
 
 static const RegType DBG_Regs_VDP1_VDP2_SCSP[] =
 {
- { 0, "------", "", 0xFFFF },
+ { 0, 0, "-----------", "", 0xFFFF },
 
- { (1 << 16) | VDP2::GSREG_LINE, "Line", "Line", 2 },
- { (1 << 16) | VDP2::GSREG_DON, "DON", "Display On", 0x100 | 1 },
- { (1 << 16) | VDP2::GSREG_BM, "BM", "Border Mode", 0x100 | 1 },
- { (1 << 16) | VDP2::GSREG_IM, "IM", "Interlace Mode", 0x100 | 2 },
- { (1 << 16) | VDP2::GSREG_VRES, "VRES", "Vertical Resolution", 0x100 | 2 },
- { (1 << 16) | VDP2::GSREG_HRES, "HRES", "Horizontal Resolution", 0x100 | 3 },
+ { (1 << 16) | VDP2::GSREG_LINE,	3,	"Line", "Line", 2 },
+ { (1 << 16) | VDP2::GSREG_DON,		7,	"DON", "Display On", 0x100 | 1 },
+ { (1 << 16) | VDP2::GSREG_BM,		8,	"BM", "Border Mode", 0x100 | 1 },
+ { (1 << 16) | VDP2::GSREG_IM,		8,	"IM", "Interlace Mode", 0x100 | 2 },
+ { (1 << 16) | VDP2::GSREG_VRES,	6,	"VRES", "Vertical Resolution", 0x100 | 2 },
+ { (1 << 16) | VDP2::GSREG_HRES,	6,	"HRES", "Horizontal Resolution", 0x100 | 3 },
 
- { 0, "------", "", 0xFFFF },
+ { 0, 0, "-----------", "", 0xFFFF },
 
- { (1 << 16) | VDP2::GSREG_RAMCTL, "RAMCTL", "RAM Control", 2 },
- { (1 << 16) | VDP2::GSREG_CYCA0, "A0", "CYCA0", 4 },
- { (1 << 16) | VDP2::GSREG_CYCA1, "A1", "CYCA1", 4 },
- { (1 << 16) | VDP2::GSREG_CYCB0, "B0", "CYCB0", 4 },
- { (1 << 16) | VDP2::GSREG_CYCB1, "B1", "CYCB1", 4 },
+ { (1 << 16) | VDP2::GSREG_RAMCTL,	1,	"RAMCTL", "RAM Control", 2 },
+ { (1 << 16) | VDP2::GSREG_CYCA0,	1,	"A0", "CYCA0", 4 },
+ { (1 << 16) | VDP2::GSREG_CYCA1,	1,	"A1", "CYCA1", 4 },
+ { (1 << 16) | VDP2::GSREG_CYCB0,	1,	"B0", "CYCB0", 4 },
+ { (1 << 16) | VDP2::GSREG_CYCB1,	1,	"B1", "CYCB1", 4 },
 
- { 0, "------", "", 0xFFFF },
+ { 0, 0, "-----------", "", 0xFFFF },
 
- { (2 << 16) | SS_SCSP::GSREG_MVOL, "MVOL", "Master Volume", 0x100 | 4 },
- { (2 << 16) | SS_SCSP::GSREG_DAC18B, "DAC18B", "18-bit DAC Enable", 0x100 | 1 },
- { (2 << 16) | SS_SCSP::GSREG_MEM4MB, "Mem4Mb", "4Mb Memory Enable", 0x100 | 1 },
- { (2 << 16) | SS_SCSP::GSREG_RBP, "RBP", "DSP Ringbuffer Base Address", 0x100 | 7 },
- { (2 << 16) | SS_SCSP::GSREG_RBL, "RBL", "DSP Ringbuffer Length", 0x100 | 2 },
- { (2 << 16) | SS_SCSP::GSREG_MSLC, "MSLC", "Slot to Monitor", 0x100 | 5 },
+ { (2 << 16) | SS_SCSP::GSREG_MVOL,	6,	"MVOL", "Master Volume", 0x100 | 4 },
+ { (2 << 16) | SS_SCSP::GSREG_DAC18B,	4,	"DAC18B", "18-bit DAC Enable", 0x100 | 1 },
+ { (2 << 16) | SS_SCSP::GSREG_MEM4MB,	4,	"Mem4Mb", "4Mb Memory Enable", 0x100 | 1 },
+ { (2 << 16) | SS_SCSP::GSREG_RBP,	6,	"RBP", "DSP Ringbuffer Base Address", 0x100 | 7 },
+ { (2 << 16) | SS_SCSP::GSREG_RBL,	7,	"RBL", "DSP Ringbuffer Length", 0x100 | 2 },
+ { (2 << 16) | SS_SCSP::GSREG_MSLC,	5,	"MSLC", "Slot to Monitor", 0x100 | 5 },
 
- { 0, "", "", 0 },
+ { 0, 0, "-----------", "", 0xFFFF },
+
+ { 0, 0, "", "", 0 },
 };
 
 static uint32 VDP1_VDP2_SCSP_GetRegister(const unsigned id, char* const special, const uint32 special_len)

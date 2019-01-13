@@ -338,7 +338,7 @@ static void PCFX_Reset(void)
  Last_VDC_AR[0] = 0;
  Last_VDC_AR[1] = 0;
 
- memset(RAM, 0x00, 2048 * 1024);
+ memset(RAM, 0x00, 8192 * 1024);
 
  for(int i = 0; i < 2; i++)
  {
@@ -390,7 +390,7 @@ static void PCFXDBG_GetAddressSpaceBytes(const char *name, uint32 Address, uint3
  {
   while(Length--)
   {
-   Address &= 2048 * 1024 - 1;
+   Address &= 8192 * 1024 - 1;
    *Buffer = RAM[Address];
    Address++;
    Buffer++;
@@ -464,9 +464,9 @@ static void PCFXDBG_PutAddressSpaceBytes(const char *name, uint32 Address, uint3
    {
     BIOSROM[Address & 0xFFFFF] = *Buffer;
    }
-   else if(Address <= 0x1FFFFF)
+   else if(Address <= 0x7FFFFF)
    {
-    RAM[Address & 0x1FFFFF] = *Buffer;
+    RAM[Address & 0x7FFFFF] = *Buffer;
    }
    else if(Address >= 0xE0000000 && Address <= 0xE7FFFFFF)
    {
@@ -492,7 +492,7 @@ static void PCFXDBG_PutAddressSpaceBytes(const char *name, uint32 Address, uint3
  {
   while(Length--)
   {
-   Address &= 2048 * 1024 - 1;
+   Address &= 8192 * 1024 - 1;
    RAM[Address] = *Buffer;
    Address++;
    Buffer++;
@@ -591,7 +591,7 @@ static MDFN_COLD void LoadCommon(std::vector<CDIF *> *CDInterfaces)
  uint32 RAM_Map_Addresses[1] = { 0x00000000 };
  uint32 BIOSROM_Map_Addresses[1] = { 0xFFF00000 };
 
- RAM = PCFX_V810.SetFastMap(RAM_Map_Addresses, 0x00200000, 1, _("RAM"));
+ RAM = PCFX_V810.SetFastMap(RAM_Map_Addresses, 0x00800000, 1, _("RAM"));
  BIOSROM = PCFX_V810.SetFastMap(BIOSROM_Map_Addresses, 0x00100000, 1, _("BIOS ROM"));
 
  {
@@ -621,7 +621,7 @@ static MDFN_COLD void LoadCommon(std::vector<CDIF *> *CDInterfaces)
 
  #ifdef WANT_DEBUGGER
  ASpace_Add(PCFXDBG_GetAddressSpaceBytes, PCFXDBG_PutAddressSpaceBytes, "cpu", "CPU Physical", 32);
- ASpace_Add(PCFXDBG_GetAddressSpaceBytes, PCFXDBG_PutAddressSpaceBytes, "ram", "RAM", 21);
+ ASpace_Add(PCFXDBG_GetAddressSpaceBytes, PCFXDBG_PutAddressSpaceBytes, "ram", "RAM", 23);
  ASpace_Add(PCFXDBG_GetAddressSpaceBytes, PCFXDBG_PutAddressSpaceBytes, "backup", "Internal Backup Memory", 15);
  ASpace_Add(PCFXDBG_GetAddressSpaceBytes, PCFXDBG_PutAddressSpaceBytes, "exbackup", "External Backup Memory", 15);
  ASpace_Add(PCFXDBG_GetAddressSpaceBytes, PCFXDBG_PutAddressSpaceBytes, "bios", "BIOS ROM", 20);
@@ -639,8 +639,8 @@ static MDFN_COLD void LoadCommon(std::vector<CDIF *> *CDInterfaces)
   //fx_vdc_chips[1] = FXVDC_Init(PCFXIRQ_SOURCE_VDCB, MDFN_GetSettingB("pcfx.nospritelimit"));
  }
 
- SoundBox_Init(MDFN_GetSettingB("pcfx.adpcm.emulate_buggy_codec"), MDFN_GetSettingB("pcfx.adpcm.suppress_channel_reset_clicks"));
  RAINBOW_Init(MDFN_GetSettingB("pcfx.rainbow.chromaip"));
+ SoundBox_Init(MDFN_GetSettingB("pcfx.adpcm.emulate_buggy_codec"), MDFN_GetSettingB("pcfx.adpcm.suppress_channel_reset_clicks"));
  FXINPUT_Init();
  FXTIMER_Init();
 
@@ -687,7 +687,7 @@ static MDFN_COLD void LoadCommon(std::vector<CDIF *> *CDInterfaces)
  MDFNGameInfo->lcm_height = MDFNGameInfo->nominal_height;
 
  MDFNMP_Init(1024 * 1024, ((uint64)1 << 32) / (1024 * 1024));
- MDFNMP_AddRAM(2048 * 1024, 0x00000000, RAM);
+ MDFNMP_AddRAM(8192 * 1024, 0x00000000, RAM);
 
 
  BackupSignalDirty = false;
@@ -1014,7 +1014,7 @@ static void StateAction(StateMem *sm, const unsigned load, const bool data_only)
 
  SFORMAT StateRegs[] =
  {
-  SFPTR8(RAM, 0x200000),
+  SFPTR8(RAM, 0x800000),
   SFVAR(Last_VDC_AR),
   SFVAR(RAM_LPA),
   SFVAR(BackupControl),

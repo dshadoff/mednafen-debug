@@ -89,73 +89,62 @@ static bool ResetAntiClickEnabled;	// = true;
 
 #ifdef WANT_DEBUGGER
 
-
-enum
-{
- GSREG_ADPCM_CTRL = _PSG_GSREG_COUNT,
- GSREG_ADPCM0_LVOL,
- GSREG_ADPCM0_RVOL,
-
- GSREG_ADPCM1_LVOL,
- GSREG_ADPCM1_RVOL,
-
- GSREG_ADPCM0_CUR,
- GSREG_ADPCM1_CUR,
-
- GSREG_CDDA_LVOL,
- GSREG_CDDA_RVOL
-};
-
 #define CHPDMOO(n)      \
- { 0, "--CH"#n"--:", "", 0xFFFF },	\
- { PSG_GSREG_CH0_FREQ | (n << 8), "Freq", "PSG Ch"#n" Frequency(Period)", 2 },   \
- { PSG_GSREG_CH0_CTRL | (n << 8), "Ctrl", "PSG Ch"#n" Control", 1 },     \
- { PSG_GSREG_CH0_BALANCE | (n << 8), "Balance", "PSG Ch"#n" Balance", 1 },  \
- { PSG_GSREG_CH0_WINDEX | (n << 8), "WIndex", "PSG Ch"#n" Waveform Index", 1},     \
- { PSG_GSREG_CH0_SCACHE | (n << 8), "SCache", "PSG Ch"#n" Sample Cache", 1 }
+	{ 0, 0, "----CH"#n"----", "", 0xFFFF },	\
+	{ PSG_GSREG_CH0_FREQ    | (n << 8), 3, "Freq",    "PSG Ch"#n" Frequency(Period)", 2 }, \
+	{ PSG_GSREG_CH0_CTRL    | (n << 8), 5, "Ctrl",    "PSG Ch"#n" Control",           1 }, \
+	{ PSG_GSREG_CH0_BALANCE | (n << 8), 2, "Balance", "PSG Ch"#n" Balance",           1 }, \
+	{ PSG_GSREG_CH0_WINDEX  | (n << 8), 3, "WIndex",  "PSG Ch"#n" Waveform Index",    1 }, \
+	{ PSG_GSREG_CH0_SCACHE  | (n << 8), 3, "SCache",  "PSG Ch"#n" Sample Cache",      1 }
 
 static const RegType SBoxRegs[] =
 {
- { PSG_GSREG_SELECT, "Select", "PSG Channel Select", 1 },
- { PSG_GSREG_GBALANCE, "GBal", "PSG Global Balance", 1 },
- { PSG_GSREG_LFOFREQ, "LFOFreq", "PSG LFO Freq", 1 },
- { PSG_GSREG_LFOCTRL, "LFOCtrl", "PSG LFO Control", 1 },
+	{ 0, 0, "----PSG----", "", 0xFFFF },	\
 
- CHPDMOO(0),
- CHPDMOO(1),
- CHPDMOO(2),
- CHPDMOO(3),
- CHPDMOO(4),
- { PSG_GSREG_CH4_NCTRL, "NCtrl", "PSG Ch4 Noise Control", 1 },
- { PSG_GSREG_CH4_LFSR, "LFSR", "PSG Ch4 Noise LFSR", 0x100 | 18 },
- CHPDMOO(5),
- { PSG_GSREG_CH5_NCTRL, "NCtrl", "PSG Ch5 Noise Control", 1 },
- { PSG_GSREG_CH5_LFSR, "LFSR", "PSG Ch5 Noise LFSR", 0x100 | 18 },
+	{ PSG_GSREG_SELECT,    3, "Select",  "PSG Channel Select",        1 },
+	{ PSG_GSREG_GBALANCE,  2, "Balance", "PSG Global Balance",        1 },
+	{ PSG_GSREG_LFOFREQ,   2, "LFOFreq", "PSG LFO Freq",              1 },
+	{ PSG_GSREG_LFOCTRL,   2, "LFOCtrl", "PSG LFO Control",           1 },
 
- { 0, "--ADPCM:--", "", 0xFFFF },
+	CHPDMOO(0),
+	CHPDMOO(1),
+	CHPDMOO(2),
+	CHPDMOO(3),
+	CHPDMOO(4),
+	{ PSG_GSREG_CH4_NCTRL, 4, "Noise",   "PSG Ch4 Noise Control",     1 },
+/*	{ PSG_GSREG_CH4_LFSR,  3, "LFSR",    "PSG Ch4 Noise LFSR",        2 }, */
+	CHPDMOO(5),
+	{ PSG_GSREG_CH5_NCTRL, 4, "Noise",   "PSG Ch5 Noise Control",     1 },
+/*	{ PSG_GSREG_CH5_LFSR,  3, "LFSR",    "PSG Ch5 Noise LFSR",        2 }, */
 
- { GSREG_ADPCM_CTRL, "Ctrl", "ADPCM Control", 2 },
- { GSREG_ADPCM0_LVOL, "CH0LVol", "ADPCM Ch0 Left Volume", 1 },
- { GSREG_ADPCM0_RVOL, "CH0RVol", "ADPCM Ch0 Right Volume", 1 },
- { GSREG_ADPCM1_LVOL, "CH1LVol", "ADPCM Ch1 Left Volume", 1 },
- { GSREG_ADPCM1_RVOL, "CH1RVol", "ADPCM Ch1 Right Volume", 1 },
+	{ 0, 0, "---ADPCM---", "", 0xFFFF },
 
- { GSREG_ADPCM0_CUR, "CH0Prc", "ADPCM Ch0 Predictor Value", 2 },
- { GSREG_ADPCM1_CUR, "CH1Prc", "ADPCM Ch1 Predictor Value", 2 },
+	{ SBOX_GSREG_ADPCM_CTRL,    3, "Ctrl",    "ADPCM Control",             2 },
+	{ SBOX_GSREG_ADPCM0_LVOL,   2, "CH0LVol", "ADPCM Ch0 Left Volume",     1 },
+	{ SBOX_GSREG_ADPCM0_RVOL,   2, "CH0RVol", "ADPCM Ch0 Right Volume",    1 },
+	{ SBOX_GSREG_ADPCM1_LVOL,   2, "CH1LVol", "ADPCM Ch1 Left Volume",     1 },
+	{ SBOX_GSREG_ADPCM1_RVOL,   2, "CH1RVol", "ADPCM Ch1 Right Volume",    1 },
 
- { 0, "--CD-DA:--", "", 0xFFFF },
- { GSREG_CDDA_LVOL, "CDLVol", "CD-DA Left Volume", 1 },
- { GSREG_CDDA_RVOL, "CDRVol", "CD-DA Right Volume", 1 },
- { 0, "", "", 0 },
+/*	{ SBOX_GSREG_ADPCM0_CUR,    1, "CH0Prc",  "ADPCM Ch0 Predictor Value", 2 }, */
+/*	{ SBOX_GSREG_ADPCM1_CUR,    1, "CH1Prc",  "ADPCM Ch1 Predictor Value", 2 }, */
+
+/*	{ 0, 0, "---CD-DA---", "", 0xFFFF }, */
+
+/*	{ SBOX_GSREG_CDDA_LVOL,     3, "CDLVol",  "CD-DA Left Volume",         1 }, */
+/*	{ SBOX_GSREG_CDDA_RVOL,     3, "CDRVol",  "CD-DA Right Volume",        1 }, */
+
+	{ 0, 0, "-----------", "", 0xFFFF },
+
+	{ 0, 0, "", "", 0 },
 };
 
-static uint32 SBoxDBG_GetRegister(const unsigned int id, char *special, const uint32 special_len)
+uint32 SBoxDBG_GetRegister(const unsigned int id, char *special, const uint32 special_len)
 {
  uint32 value = 0xDEADBEEF;
 
  switch(id)
  {
-  case GSREG_ADPCM_CTRL:
+  case SBOX_GSREG_ADPCM_CTRL:
 	value = sbox.ADPCMControl;
   	if(special)
 	{
@@ -165,35 +154,35 @@ static uint32 SBoxDBG_GetRegister(const unsigned int id, char *special, const ui
 	}
 	break;
 
-  case GSREG_ADPCM0_LVOL:
+  case SBOX_GSREG_ADPCM0_LVOL:
   	value = sbox.ADPCMVolume[0][0];
 	break;
 
-  case GSREG_ADPCM0_RVOL:
+  case SBOX_GSREG_ADPCM0_RVOL:
         value = sbox.ADPCMVolume[0][1];
         break;
 
-  case GSREG_ADPCM1_LVOL:
+  case SBOX_GSREG_ADPCM1_LVOL:
         value = sbox.ADPCMVolume[1][0];
         break;
 
-  case GSREG_ADPCM1_RVOL:
+  case SBOX_GSREG_ADPCM1_RVOL:
         value = sbox.ADPCMVolume[1][1];
         break;
 
-  case GSREG_CDDA_LVOL:
+  case SBOX_GSREG_CDDA_LVOL:
         value = sbox.CDDAVolume[0];
         break;
 
-  case GSREG_CDDA_RVOL:
+  case SBOX_GSREG_CDDA_RVOL:
         value = sbox.CDDAVolume[1];
         break;
 
-  case GSREG_ADPCM0_CUR:
+  case SBOX_GSREG_ADPCM0_CUR:
 	value = sbox.ADPCMPredictor[0] + 0x4000;
 	break;
 
-  case GSREG_ADPCM1_CUR:
+  case SBOX_GSREG_ADPCM1_CUR:
 	value = sbox.ADPCMPredictor[1] + 0x4000;
 	break;
 
@@ -204,47 +193,47 @@ static uint32 SBoxDBG_GetRegister(const unsigned int id, char *special, const ui
  return(value);
 }
 
-static void SBoxDBG_SetRegister(const unsigned int id, uint32 value)
+void SBoxDBG_SetRegister(const unsigned int id, uint32 value)
 {
  if(id < _PSG_GSREG_COUNT)
   pce_psg->SetRegister(id, value);
  else switch(id)
  {
-  case GSREG_ADPCM_CTRL:
+  case SBOX_GSREG_ADPCM_CTRL:
 	sbox.ADPCMControl = value & 0xFFFF;
 	break;
 
-  case GSREG_ADPCM0_LVOL:
+  case SBOX_GSREG_ADPCM0_LVOL:
         sbox.ADPCMVolume[0][0] = value & 0x3F;
         break;
 
-  case GSREG_ADPCM0_RVOL:
+  case SBOX_GSREG_ADPCM0_RVOL:
         sbox.ADPCMVolume[0][1] = value & 0x3F;
         break;
 
-  case GSREG_ADPCM1_LVOL:
+  case SBOX_GSREG_ADPCM1_LVOL:
         sbox.ADPCMVolume[1][0] = value & 0x3F;
         break;
 
-  case GSREG_ADPCM1_RVOL:
+  case SBOX_GSREG_ADPCM1_RVOL:
         sbox.ADPCMVolume[1][1] = value & 0x3F;
         break;
 
-  case GSREG_CDDA_LVOL:
+  case SBOX_GSREG_CDDA_LVOL:
         sbox.CDDAVolume[0] = value & 0x3F;
 	SCSICD_SetCDDAVolume(0.50f * sbox.CDDAVolume[0] / 63, 0.50f * sbox.CDDAVolume[1] / 63);
         break;
 
-  case GSREG_CDDA_RVOL:
+  case SBOX_GSREG_CDDA_RVOL:
         sbox.CDDAVolume[1] = value & 0x3F;
 	SCSICD_SetCDDAVolume(0.50f * sbox.CDDAVolume[0] / 63, 0.50f * sbox.CDDAVolume[1] / 63);
         break;
 
-  case GSREG_ADPCM0_CUR:
+  case SBOX_GSREG_ADPCM0_CUR:
         sbox.ADPCMPredictor[0] = ((int32)value & 0x7FFF) - 0x4000;
         break;
 
-  case GSREG_ADPCM1_CUR:
+  case SBOX_GSREG_ADPCM1_CUR:
         sbox.ADPCMPredictor[1] = ((int32)value & 0x7FFF) - 0x4000;
         break;
  }
