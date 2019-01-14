@@ -31,6 +31,8 @@
 #include <mednafen/hw_misc/arcade_card/arcade_card.h>
 
 
+#define PCELOG_STDOUT   1
+
 #define CD_BOOT         0xE000
 #define CD_RESET        0xE003
 #define CD_BASE         0xE006
@@ -1106,10 +1108,21 @@ void PCEDBG_DoLog(const char *type, const char *format, ...)
  {
   char *temp;
 
+#if PCELOG_STDOUT
+  uint64 currtimestamp;
+  currtimestamp = PCE_TimestampBase + HuCPU.GetRegister(HuC6280::GSREG_STAMP);
+#endif
+
   va_list ap;
   va_start(ap, format);
 
   temp = trio_vaprintf(format, ap);
+
+#if PCELOG_STDOUT
+  fprintf(stdout, "%08X:%s:%s\n", currtimestamp, type, temp);
+  fflush(stdout);
+#endif
+
   LogFunc(type, temp);
   free(temp);
 
