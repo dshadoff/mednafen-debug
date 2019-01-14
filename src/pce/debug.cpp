@@ -31,7 +31,7 @@
 #include <mednafen/hw_misc/arcade_card/arcade_card.h>
 
 
-#define PCELOG_STDOUT   1
+#define PCELOG_STDOUT   0
 
 #define CD_BOOT         0xE000
 #define CD_RESET        0xE003
