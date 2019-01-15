@@ -31,7 +31,8 @@
 #include <mednafen/hw_misc/arcade_card/arcade_card.h>
 
 
-#define PCELOG_STDOUT   0
+#define PCELOG_STDOUT          1
+#define PCEFONT_STRINGSEARCH   0
 
 #define CD_BOOT         0xE000
 #define CD_RESET        0xE003
@@ -866,11 +867,12 @@ static void SyscardFuncLog(uint32 PC)
    trio_snprintf(buf1, 128, "16x16");
 
   else if (DH == 1)
-   trio_snprintf(buf1, 128, "16x16");
+   trio_snprintf(buf1, 128, "12x12");
 
   else
    trio_snprintf(buf1, 128, "     ");
 
+#if PCEFONT_STRINGSEARCH   
   /* if less than 1/30 sec between calls, mark once then suppress */
   if ((currtimestamp - getfnt_lasttimestamp) > getfnt_threshold)
   {
@@ -925,11 +927,14 @@ static void SyscardFuncLog(uint32 PC)
     found_loc1 = -1;  /* turn off the second line, since the string was already located */
    }
   }
+#endif // PCEFONT_STRINGSEARCH   
 
   PCEDBG_DoLog("BIOS", "Call EX_GETFNT from $%04X, Buf=$%04X (Bank $%02X), SJIS=0x%04X = %s, FontNum=%02X (%s)", LastPC, temp1, mpr[temp1>>13], sjis_glyph, PCEDBG_ShiftJIS_to_UTF8(sjis_glyph), DH, buf1);
 
+#if PCEFONT_STRINGSEARCH   
   if (found_loc1 > -1)
    PCEDBG_DoLog("BIOS", "     EX_GETFNT String Search:  %s", buf2);
+#endif // PCEFONT_STRINGSEARCH   
 
   getfnt_lasttimestamp = currtimestamp;
  }
