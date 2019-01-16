@@ -31,6 +31,10 @@
 #include "prompt.h"
 #include "video.h"
 
+
+#define HALT_ON_ALT_D     1  // 0 = normal; 1 = force stop on Alt-D
+
+
 static MemDebugger* memdbg = NULL;
 static std::unique_ptr<FileStream> TraceLog;
 static std::string TraceLogSpec;
@@ -161,7 +165,7 @@ static unsigned long long ParsePhysAddr(const char *za)
 static void UpdateCoreHooks(void)
 {
  bool BPInUse = PCBreakPoints.size() || ReadBreakpoints.size() || WriteBreakpoints.size() || IOReadBreakpoints.size() ||
-	IOWriteBreakpoints.size() || AuxReadBreakpoints.size() || AuxWriteBreakpoints.size() || OpBreakpoints.size();
+	IOWriteBreakpoints.size() || AuxReadBreakpoints.size() || AuxWriteBreakpoints.size() || OpBreakpoints.size() || HALT_ON_ALT_D;
  bool CPUCBNeeded = BPInUse || TraceLog || InSteppingMode || (NeedStep == 2);
 
  CurGame->Debugger->EnableBranchTrace(BPInUse || TraceLog || IsActive);
@@ -1409,7 +1413,14 @@ bool Debugger_IsActive(void)
 bool Debugger_GT_Toggle(void)
 {
  if(CurGame->Debugger)
+ {
+#if HALT_ON_ALT_D
+  if (!IsActive)
+   Debugger_GT_ForceSteppingMode();
+#endif
+
   SetActive(!IsActive, WhichMode);
+ }
 
  return(IsActive);
 }
