@@ -328,7 +328,16 @@ void ADPCM_PokeRAM(uint32 Address, uint32 Length, const uint8 *Buffer)
 
 static void update_irq_state()
 {
+        static uint8    oldirq = 0;
         uint8           irq = _Port[2] & _Port[0x3] & (0x4|0x8|0x10|0x20|0x40);
+	uint8		newirq = (irq & ~oldirq);
+
+	
+	if ( newirq != 0)
+	{
+         PCEDBG_DoLog("CD-IRQ", "IRQ raised: %s%s%s%s%s", (newirq&0x40)?"SCSICD_DATA_XFER_READY ":"", (newirq&0x20)?"SCSICD_DATA_XFER_DONE ":"", (newirq&0x10)?"0x10 ":"", (newirq&0x08)?"ADPCM_END_REACHED ":"", (newirq&0x04)?"ADPCM_HALF_REACHED ":"");
+	}
+	oldirq = irq;
 
 	IRQCB((bool)irq);
 }
@@ -787,7 +796,7 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 
 		case 0xb:	// adpcm dma
 			//ADPCM_DEBUG("DMA: %02x\n", V);
-			PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   DMA $%02x", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, V);
+			PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Set DMA control $%02x", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, V);
                         _Port[0xb] = data;
 			break;
 
@@ -1255,6 +1264,7 @@ MDFN_FASTCALL int32 PCECD_Run(uint32 in_timestamp)
     if(SCSICD_GetCD())
     {
      _Port[0xb] &= ~1;
+     PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   DMA Transfer End", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing);
      #ifdef PCECD_DEBUG
      puts("DMA End");
      #endif
