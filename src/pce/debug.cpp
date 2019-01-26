@@ -1124,7 +1124,7 @@ void PCEDBG_DoLog(const char *type, const char *format, ...)
   temp = trio_vaprintf(format, ap);
 
 #if PCELOG_STDOUT
-  fprintf(stdout, "%08X:%s:%s\n", currtimestamp, type, temp);
+  fprintf(stdout, "%010d:%s:%s\n", currtimestamp, type, temp);
   fflush(stdout);
 #endif
 

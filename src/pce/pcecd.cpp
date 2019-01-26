@@ -85,8 +85,10 @@
 #include <mednafen/cdrom/scsicd.h>
 #include <mednafen/sound/okiadpcm.h>
 #include <mednafen/cdrom/SimpleFIFO.h>
+#include <trio/trio.h>
 
 #include "pcecd.h"
+#include "debug.h"
 
 namespace MDFN_IEN_PCE
 {
@@ -603,7 +605,8 @@ MDFN_FASTCALL uint8 PCECD_Read(uint32 timestamp, uint32 A, int32 &next_event, co
    case 0xa: 
     if(!PeekMode)
     {
-     ADPCM_DEBUG("ReadBuffer\n");
+     //ADPCM_DEBUG("ReadBuffer\n");
+     PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Readbuffer [$%04x]", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, ADPCM.ReadAddr);
      ADPCM.ReadPending = 19 * 3; //24 * 3;
     }
 
@@ -661,6 +664,10 @@ static INLINE void Fader_Run(const int32 clocks)
 MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 {
 	const uint8 V = data;
+	char subcmd1[200];
+	char subcmd2[200];
+	char subcmd3[200];
+	char subcmd4[200];
 
 	#ifdef PCECD_DEBUG
 	printf("Write: (PC=%04x, t=%6d) %04x %02x; MSG: %d, REQ: %d, ACK: %d, CD: %d, IO: %d, BSY: %d, SEL: %d\n", HuCPU.PC, timestamp, physAddr, data, SCSICD_GetMSG(), SCSICD_GetREQ(), SCSICD_GetACK(), SCSICD_GetCD(), SCSICD_GetIO(), SCSICD_GetBSY(), SCSICD_GetSEL());
@@ -740,12 +747,14 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 			ADPCM.Addr &= 0xFF00;
 			ADPCM.Addr |= V;
 
-			ADPCM_DEBUG("SAL: %02x, %d\n", V, timestamp);
+			//ADPCM_DEBUG("SAL: %02x, %d\n", V, timestamp);
+			PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Set Address Low %02x", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, V);
 
                         // Length appears to be constantly latched when D4 is set(tested on a real system)
                         if(ADPCM.LastCmd & 0x10)
                         {
-                         ADPCM_DEBUG("Set length(crazy way L): %04x\n", ADPCM.Addr);
+                         //ADPCM_DEBUG("Set length(crazy way L): %04x\n", ADPCM.Addr);
+			 PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Set Length (Crazy Way L) $%04x", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, ADPCM.Addr);
                          ADPCM.LengthCount = ADPCM.Addr;
                         }
 			break;
@@ -757,24 +766,28 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 			ADPCM.Addr &= 0x00FF;
 			ADPCM.Addr |= V << 8;
 
-			ADPCM_DEBUG("SAH: %02x, %d\n", V, timestamp);
+			//ADPCM_DEBUG("SAH: %02x, %d\n", V, timestamp);
+			PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Set Address High %02x", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, V);
 
                         // Length appears to be constantly latched when D4 is set(tested on a real system)
                         if(ADPCM.LastCmd & 0x10)
                         {
-                         ADPCM_DEBUG("Set length(crazy way H): %04x\n", ADPCM.Addr);
+                         //ADPCM_DEBUG("Set length(crazy way H): %04x\n", ADPCM.Addr);
+			 PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Set Length (Crazy Way H) $%04x", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, ADPCM.Addr);
                          ADPCM.LengthCount = ADPCM.Addr;
                         }
 			break;
 
 		case 0xa:
                         //ADPCM_DEBUG("Write: %02x, %d\n", V, timestamp);
+			PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Write $%02x -> [$%04x]", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, V, ADPCM.WriteAddr);
 		        ADPCM.WritePending = 3 * 11;
 		        ADPCM.WritePendingValue = data;
 			break;
 
 		case 0xb:	// adpcm dma
-			ADPCM_DEBUG("DMA: %02x\n", V);
+			//ADPCM_DEBUG("DMA: %02x\n", V);
+			PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   DMA $%02x", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, V);
                         _Port[0xb] = data;
 			break;
 
@@ -782,9 +795,15 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 			break;
 
 		case 0xd:
-		        ADPCM_DEBUG("Write180D: %02x\n", V);
+		        //ADPCM_DEBUG("Write180D: %02x\n", V);
+			subcmd1[0] = '\0';
+			subcmd2[0] = '\0';
+			subcmd3[0] = '\0';
+			subcmd4[0] = '\0';
+
 		        if(data & 0x80)
 		        {
+			 PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Write180D: $%02x,  Reset ADPCM", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, V);
 		         ADPCM.Addr = 0;
 		         ADPCM.ReadAddr = 0;
 		         ADPCM.WriteAddr = 0;
@@ -805,10 +824,14 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 		        }
 
 			if(ADPCM.Playing && !(data & 0x20))
+			{
 			 ADPCM.Playing = false;
+			 trio_snprintf(subcmd1, 128, ", Stop playing");
+			}
 
 			if(!ADPCM.Playing && (data & 0x20))
 			{
+			 trio_snprintf(subcmd1, 128, ", Start playing");
 			 ADPCM.bigdiv = ADPCM.bigdivacc * (16 - ADPCM.SampleFreq);
 			 ADPCM.Playing = true;
 			 ADPCM.HalfReached = false;	// Not sure about this.
@@ -820,7 +843,8 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 			// Length appears to be constantly latched when D4 is set(tested on a real system)
 		        if(data & 0x10)
 		        {
-		         ADPCM_DEBUG("Set length: %04x\n", ADPCM.Addr);
+		         //ADPCM_DEBUG("Set length: %04x\n", ADPCM.Addr);
+			 trio_snprintf(subcmd2, 128, ", Set length: $%04x", ADPCM.Addr);
 		         ADPCM.LengthCount = ADPCM.Addr;
 			 ADPCM.EndReached = false;
 		        }
@@ -833,7 +857,8 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 		         else
 		          ADPCM.ReadAddr = (ADPCM.Addr - 1) & 0xFFFF;
 
-		         ADPCM_DEBUG("Set ReadAddr: %04x, %06x\n", ADPCM.Addr, ADPCM.ReadAddr);
+		         //ADPCM_DEBUG("Set ReadAddr: %04x, %06x\n", ADPCM.Addr, ADPCM.ReadAddr);
+			 trio_snprintf(subcmd3, 128, ", Set ReadAddr: $%04x (final value %06x)", ADPCM.Addr, ADPCM.ReadAddr);
 		        }
 
 		        // D0 and D1 control write address
@@ -842,8 +867,10 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 		         ADPCM.WriteAddr = ADPCM.Addr;
 		         if(!(data & 0x1))
 		          ADPCM.WriteAddr = (ADPCM.WriteAddr - 1) & 0xFFFF;
-		         ADPCM_DEBUG("Set WriteAddr: %04x, %06x\n", ADPCM.Addr, ADPCM.WriteAddr);
+		         //ADPCM_DEBUG("Set WriteAddr: %04x, %06x\n", ADPCM.Addr, ADPCM.WriteAddr);
+			 trio_snprintf(subcmd4, 128, ", Set WriteAddr: $%04x (final value %06x)", ADPCM.Addr, ADPCM.WriteAddr);
 		        }
+			PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Write180D: $%02x%s%s%s%s", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, V, subcmd1, subcmd2, subcmd3, subcmd4);
 		        ADPCM.LastCmd = data;
 			UpdateADPCMIRQState();
 			break;
@@ -854,7 +881,8 @@ MDFN_FASTCALL int32 PCECD_Write(uint32 timestamp, uint32 physAddr, uint8 data)
 
 		         ADPCM.SampleFreq = freq;
 
-			 ADPCM_DEBUG("Freq: %02x\n", freq);
+			 //ADPCM_DEBUG("Freq: %02x\n", freq);pcecd
+			 PCEDBG_DoLog("CD-ADPCM", "ADPCM: [Half=%d, End=%d, Playing=%d]   Freq: %02x (%d KHz)", ADPCM.HalfReached, ADPCM.EndReached, ADPCM.Playing, freq, 32/(16-freq));
 			}
 			break;
 
