@@ -572,6 +572,9 @@ static void SyscardFuncLog(uint32 PC)
   else if ((DH & 0xBF) == 4)    /* Unchanged */
    trio_snprintf(buf3, 128, "Mode=Unchanged");
 
+  else    /* Everything else */
+   trio_snprintf(buf3, 128, "Mode= $%02X", DH);
+
 
   PCEDBG_DoLog("BIOS", "Call CD_PLAY from $%04X %s %s %s", LastPC, buf1, buf2, buf3);
  }
@@ -1124,7 +1127,7 @@ void PCEDBG_DoLog(const char *type, const char *format, ...)
   temp = trio_vaprintf(format, ap);
 
 #if PCELOG_STDOUT
-  fprintf(stdout, "%010d:%s:%s\n", currtimestamp, type, temp);
+  fprintf(stdout, "%012lu:%s:%s\n", currtimestamp, type, temp);
   fflush(stdout);
 #endif
 
